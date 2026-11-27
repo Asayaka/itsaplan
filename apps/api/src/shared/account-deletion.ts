@@ -1,7 +1,8 @@
-import { db, documentAsset, projectDocument, user } from '@repo/db';
+import { db, documentAsset, projectDocument, user, userPreference } from '@repo/db';
 import { and, asc, eq, inArray, or, sql } from 'drizzle-orm';
 import { deleteObjects } from '@repo/storage';
 import { releaseOwnedWorkspaces } from '#modules/teams/service';
+import { accountBackgroundIdFromUrl, accountBackgroundObjectKey } from '#shared/account-background';
 
 const DOCUMENT_TREE_LOCK_NAMESPACE = 1_145_390_931;
 
@@ -10,7 +11,14 @@ export async function deleteAccount(userId: string): Promise<boolean> {
   await releaseOwnedWorkspaces(userId);
   const result = await db.transaction(async (tx) => {
     const locked = await tx.execute(sql`select id from "user" where id = ${userId} for update`);
-    if (locked.length === 0) return { deleted: false, assetKeys: [] as string[] };
+    if (locked.length === 0)
+      return { deleted: false, assetKeys: [] as string[], backgroundKeys: [] as string[] };
+
+    const [preference] = await tx
+      .select({ backgroundImage: userPreference.backgroundImage })
+      .from(userPreference)
+      .where(eq(userPreference.userId, userId));
+    const backgroundId = accountBackgroundIdFromUrl(preference?.backgroundImage);
 
     // Document writers take an actor lock before the project tree lock. Keep the
     // same ordering here so account deletion cannot race an autosave or move.
@@ -91,9 +99,13 @@ export async function deleteAccount(userId: string): Promise<boolean> {
       .delete(projectDocument)
       .where(and(eq(projectDocument.ownerUserId, userId), eq(projectDocument.isPrivate, true)));
     await tx.delete(user).where(eq(user.id, userId));
-    return { deleted: true, assetKeys: assets.map((asset) => asset.s3Key) };
+    return {
+      deleted: true,
+      assetKeys: assets.map((asset) => asset.s3Key),
+      backgroundKeys: backgroundId ? [accountBackgroundObjectKey(userId, backgroundId)] : [],
+    };
   });
 
-  await deleteObjects(result.assetKeys);
+  await deleteObjects([...result.assetKeys, ...result.backgroundKeys]);
   return result.deleted;
 }

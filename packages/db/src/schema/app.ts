@@ -344,6 +344,9 @@ export const userPreference = pgTable(
     // Whether the user turned off the notice that a comment on a synced issue stays
     // here because they have no account connected on the repository host.
     unsentCommentNoticeHidden: boolean('unsent_comment_notice_hidden').notNull().default(false),
+    backgroundImage: text('background_image'),
+    backgroundEnabled: boolean('background_enabled').notNull().default(false),
+    backgroundOpacity: integer('background_opacity').notNull().default(15),
     // The user's own keyboard shortcut overrides, as { hotkeyId: combo }. Only the
     // bindings they changed are stored; the rest come from the instance defaults
     // (app_setting key 'hotkeys') and then the built-in ones.
@@ -373,6 +376,7 @@ export const userPreference = pgTable(
       'user_preference_issue_activity_view_check',
       sql`${t.issueActivityView} IN ('flat', 'grouped')`,
     ),
+    check('user_preference_background_opacity_check', sql`${t.backgroundOpacity} BETWEEN 0 AND 40`),
   ],
 );
 

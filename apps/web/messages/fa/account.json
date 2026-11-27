@@ -106,6 +106,11 @@
     "label": "ترجیحات",
     "title": "ترجیحات",
     "description": "ظاهر و رفتار برنامه برای شما.",
+    "backgroundImage": "تصویر پس‌زمینه",
+    "backgroundImageDescription": "تصویر PNG، JPEG، WebP یا AVIF با حداکثر حجم ۵ مگابایت بارگذاری کنید. تصویر پشت محتوای پروژه نمایش داده می‌شود، نه نوار کناری، و برای استفاده در دستگاه‌های دیگر در حساب شما ذخیره می‌شود.",
+    "useBackgroundImage": "استفاده از تصویر پس‌زمینه",
+    "backgroundImageOpacity": "تیرگی تصویر",
+    "removeBackgroundImage": "حذف تصویر پس‌زمینه",
     "saved": "ترجیحات ذخیره شد",
     "sections": {
       "appearance": "ظاهر",

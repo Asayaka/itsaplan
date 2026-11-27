@@ -43,6 +43,9 @@ describe('user preferences', () => {
       onboardingSeen: false,
       showcaseSeen: false,
       unsentCommentNoticeHidden: false,
+      backgroundImage: null,
+      backgroundEnabled: false,
+      backgroundOpacity: 15,
       lastProjectId: null,
       hotkeys: {},
     });
@@ -91,6 +94,8 @@ describe('user preferences', () => {
       onboardingSeen: true,
       showcaseSeen: true,
       unsentCommentNoticeHidden: true,
+      backgroundEnabled: true,
+      backgroundOpacity: 30,
       hotkeys: { 'issue.new': 'i' },
     });
 
@@ -113,6 +118,9 @@ describe('user preferences', () => {
       onboardingSeen: true,
       showcaseSeen: true,
       unsentCommentNoticeHidden: true,
+      backgroundImage: null,
+      backgroundEnabled: true,
+      backgroundOpacity: 30,
       lastProjectId: null,
       hotkeys: { 'issue.new': 'i' },
     });
@@ -159,6 +167,52 @@ describe('user preferences', () => {
       });
       expect(res.status).toBe(400);
     }
+  });
+
+  it('rejects a background opacity outside the supported range', async () => {
+    const u = await signUpTestUser();
+    const client = authedApi(u.cookie);
+
+    for (const backgroundOpacity of [-1, 41]) {
+      const res = await client.account.preferences.patch({ backgroundOpacity });
+      expect(res.status).toBe(400);
+    }
+  });
+
+  it('rejects non-image background uploads', async () => {
+    const u = await signUpTestUser();
+
+    const res = await authedApi(u.cookie).account.background.post({
+      file: new File(['not an image'], 'note.txt', { type: 'text/plain' }),
+    });
+
+    expect(res.status).toBe(400);
+  });
+
+  it('stores, serves only to the account owner, and removes a background image', async () => {
+    const owner = await signUpTestUser();
+    const other = await signUpTestUser();
+    const ownerApi = authedApi(owner.cookie);
+    const uploaded = await ownerApi.account.background.post({
+      file: new File(['image bytes'], 'background.png', { type: 'image/png' }),
+    });
+
+    expect(uploaded.status).toBe(200);
+    expect(uploaded.data?.backgroundEnabled).toBe(true);
+    expect(uploaded.data?.backgroundImage).toMatch(
+      /^\/protected-media\/account\/background\/[0-9a-f-]+\/raw$/,
+    );
+    const id = uploaded.data!.backgroundImage!.split('/').at(-2)!;
+    const raw = await ownerApi.account.background({ id }).raw.get();
+    expect(raw.status).toBe(200);
+    expect(String(raw.data)).toBe('image bytes');
+
+    const hidden = await authedApi(other.cookie).account.background({ id }).raw.get();
+    expect(hidden.status).toBe(404);
+
+    const removed = await ownerApi.account.background.delete();
+    expect(removed.status).toBe(200);
+    expect(removed.data).toMatchObject({ backgroundImage: null, backgroundEnabled: false });
   });
 
   it('takes a contrast from 0 to 100 in whole steps', async () => {

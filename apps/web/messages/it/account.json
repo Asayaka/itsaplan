@@ -106,6 +106,11 @@
     "label": "Preferenze",
     "title": "Preferenze",
     "description": "Come l'app appare e funziona per te.",
+    "backgroundImage": "Immagine di sfondo",
+    "backgroundImageDescription": "Carica un’immagine PNG, JPEG, WebP o AVIF fino a 5 MB. Viene mostrata dietro i contenuti del progetto, non dietro la barra laterale, e salvata nel tuo account per gli altri dispositivi.",
+    "useBackgroundImage": "Usa immagine di sfondo",
+    "backgroundImageOpacity": "Opacità immagine",
+    "removeBackgroundImage": "Rimuovi immagine di sfondo",
     "saved": "Preferenze salvate",
     "sections": {
       "appearance": "Aspetto",

@@ -5,6 +5,8 @@ import {
   type AccountPreferences,
   type AccountPreferencesPatch,
   getAccountPreferences,
+  removeAccountBackground,
+  uploadAccountBackground,
   updateAccountPreferences,
 } from '@/lib/api/endpoints/userPreferences';
 import { useSession } from '@/lib/auth-client';
@@ -32,6 +34,9 @@ export const PREFERENCE_DEFAULTS: AccountPreferences = {
   onboardingSeen: false,
   showcaseSeen: false,
   unsentCommentNoticeHidden: false,
+  backgroundImage: null,
+  backgroundEnabled: false,
+  backgroundOpacity: 15,
   lastProjectId: null,
   hotkeys: {},
 };
@@ -72,5 +77,21 @@ export function useUpdateAccountPreferences() {
     onError: (_err, _input, context) => {
       if (context?.previous) qc.setQueryData(qk.accountPreferences, context.previous);
     },
+  });
+}
+
+export function useUploadAccountBackground() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: uploadAccountBackground,
+    onSuccess: (data) => qc.setQueryData(qk.accountPreferences, data),
+  });
+}
+
+export function useRemoveAccountBackground() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: removeAccountBackground,
+    onSuccess: (data) => qc.setQueryData(qk.accountPreferences, data),
   });
 }

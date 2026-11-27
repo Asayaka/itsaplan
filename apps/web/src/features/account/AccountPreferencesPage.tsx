@@ -26,6 +26,7 @@ import AccountPreferencesTimezone from './components/preferences/AccountPreferen
 import AccountPreferencesColorTheme from './components/preferences/AccountPreferencesColorTheme';
 import AccountHotkeys from './components/preferences/AccountHotkeys';
 import AccountPreferencesNav from './components/preferences/AccountPreferencesNav';
+import AccountPreferencesBackground from './components/preferences/AccountPreferencesBackground';
 
 const ISSUE_OPEN_MODES: IssueOpenMode[] = ['panel', 'page'];
 const AGENT_RUNS_VIEWS: AgentRunsView[] = ['full', 'compact'];
@@ -65,6 +66,7 @@ export default function AccountPreferencesPage() {
           saveQuietly={(patch) => update.mutate(patch)}
           disabled={disabled}
         />
+        {data && <AccountPreferencesBackground preferences={prefs} />}
         <AccountPreferenceRow label={t('language')} description={t('languageDescription')}>
           <AccountPreferenceSelect
             value={prefs.locale}

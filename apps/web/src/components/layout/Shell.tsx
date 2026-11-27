@@ -33,6 +33,7 @@ import { OPEN_FILTER_MENU_EVENT } from '@/components/layout/FilterMenuButton';
 import ShellBody from '@/components/layout/ShellBody';
 import ShellHeaderTitle from '@/components/layout/ShellHeaderTitle';
 import ShellOverlays from '@/components/layout/ShellOverlays';
+import ProjectBackground from '@/components/layout/ProjectBackground';
 import { useTranslations } from 'next-intl';
 import { ShellNotice } from '@/cloud';
 
@@ -84,7 +85,13 @@ export default function Shell({
   );
 
   const initiativeOptions = useInitiativeOptionsQuery(projectKey).data ?? [];
-  const { issueOpenMode, showChatByDefault } = useAccountPreferences();
+  const {
+    issueOpenMode,
+    showChatByDefault,
+    backgroundImage,
+    backgroundEnabled,
+    backgroundOpacity,
+  } = useAccountPreferences();
   const overlays = useOverlays();
   const sidePanel = useSidePanel(projectKey, showChatByDefault);
   // The agent a page asked to chat with, held until the panel has started that chat.
@@ -241,15 +248,20 @@ export default function Shell({
 
             <div className="relative flex min-h-0 flex-1 overflow-hidden">
               <div className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
-                <ShellBody
-                  forbidden={forbidden}
-                  hasProject={!!project}
-                  hasError={!!errorMsg}
-                  projectsLoaded={projectsLoaded}
-                  projectCount={projects.length}
-                >
-                  <IssueRefsProvider refs={issueRefs}>{children}</IssueRefsProvider>
-                </ShellBody>
+                {backgroundEnabled && (
+                  <ProjectBackground image={backgroundImage} opacity={backgroundOpacity} />
+                )}
+                <div className="relative z-10 flex min-h-0 flex-1 flex-col overflow-hidden">
+                  <ShellBody
+                    forbidden={forbidden}
+                    hasProject={!!project}
+                    hasError={!!errorMsg}
+                    projectsLoaded={projectsLoaded}
+                    projectCount={projects.length}
+                  >
+                    <IssueRefsProvider refs={issueRefs}>{children}</IssueRefsProvider>
+                  </ShellBody>
+                </div>
               </div>
 
               {hasAgents && projectKey && project && (

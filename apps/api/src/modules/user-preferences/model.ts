@@ -43,6 +43,9 @@ export const PreferenceResponse = t.Object({
   onboardingSeen: t.Boolean(),
   showcaseSeen: t.Boolean(),
   unsentCommentNoticeHidden: t.Boolean(),
+  backgroundImage: t.Nullable(t.String()),
+  backgroundEnabled: t.Boolean(),
+  backgroundOpacity: t.Integer({ minimum: 0, maximum: 40 }),
   lastProjectId: t.Nullable(t.Number()),
   hotkeys: HotkeyCombosSchema,
 });
@@ -64,6 +67,16 @@ export const PreferencePatch = t.Object({
   onboardingSeen: t.Optional(t.Boolean()),
   showcaseSeen: t.Optional(t.Boolean()),
   unsentCommentNoticeHidden: t.Optional(t.Boolean()),
+  backgroundEnabled: t.Optional(t.Boolean()),
+  backgroundOpacity: t.Optional(t.Integer({ minimum: 0, maximum: 40 })),
   lastProjectId: t.Optional(t.Nullable(t.Number())),
   hotkeys: t.Optional(HotkeyCombosSchema),
 });
+
+export const backgroundParams = t.Object({
+  id: t.String({
+    pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$',
+  }),
+});
+
+export const uploadBackgroundBody = t.Object({ file: t.File() });

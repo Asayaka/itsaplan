@@ -12,6 +12,7 @@ const MULTIPART_OPERATIONS = new Set([
   'POST /issues/{issueId}/attachments',
   'PUT /attachments/{publicId}',
   'POST /me/avatar',
+  'POST /account/background',
   'POST /teams/{teamId}/agent-skills/{skillId}/references',
 ]);
 

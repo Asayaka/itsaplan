@@ -1450,6 +1450,13 @@
       "when": 1795721316920,
       "tag": "0206_actor_source_extensions",
       "breakpoints": true
+    },
+    {
+      "idx": 207,
+      "version": "7",
+      "when": 1795767999375,
+      "tag": "0207_account_background",
+      "breakpoints": true
     }
   ]
 }

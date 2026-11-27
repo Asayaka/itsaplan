@@ -106,6 +106,11 @@
     "label": "Preferences",
     "title": "Preferences",
     "description": "How the app looks and works for you.",
+    "backgroundImage": "Background image",
+    "backgroundImageDescription": "Upload a PNG, JPEG, WebP, or AVIF image up to 5 MB. It appears behind project content, not the sidebar, and is saved to your account for use on other devices.",
+    "useBackgroundImage": "Use background image",
+    "backgroundImageOpacity": "Image opacity",
+    "removeBackgroundImage": "Remove background image",
     "saved": "Preferences saved",
     "sections": {
       "appearance": "Appearance",

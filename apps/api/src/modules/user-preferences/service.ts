@@ -74,6 +74,9 @@ export interface UserPreferenceDto {
   // Whether the user turned off the notice that a comment on a synced issue stays here
   // until they connect their account on the repository host.
   unsentCommentNoticeHidden: boolean;
+  backgroundImage: string | null;
+  backgroundEnabled: boolean;
+  backgroundOpacity: number;
   // The project the user was in last, or null before they opened one. The app root
   // reopens it; a deleted project clears it through the FK.
   lastProjectId: number | null;
@@ -103,6 +106,9 @@ export function defaults(locale: Locale = DEFAULT_LOCALE): UserPreferenceDto {
     onboardingSeen: false,
     showcaseSeen: false,
     unsentCommentNoticeHidden: false,
+    backgroundImage: null,
+    backgroundEnabled: false,
+    backgroundOpacity: 15,
     lastProjectId: null,
     hotkeys: {},
   };
@@ -136,6 +142,9 @@ function toDto(row: {
   onboardingSeen: boolean;
   showcaseSeen: boolean;
   unsentCommentNoticeHidden: boolean;
+  backgroundImage: string | null;
+  backgroundEnabled: boolean;
+  backgroundOpacity: number;
   lastProjectId: number | null;
   hotkeys: Record<string, string> | null;
 }): UserPreferenceDto {
@@ -156,6 +165,9 @@ function toDto(row: {
     onboardingSeen: row.onboardingSeen,
     showcaseSeen: row.showcaseSeen,
     unsentCommentNoticeHidden: row.unsentCommentNoticeHidden,
+    backgroundImage: row.backgroundImage,
+    backgroundEnabled: row.backgroundEnabled,
+    backgroundOpacity: row.backgroundOpacity,
     lastProjectId: row.lastProjectId,
     hotkeys: row.hotkeys ?? {},
   };
@@ -184,6 +196,9 @@ export async function getPreferences(
       onboardingSeen: userPreference.onboardingSeen,
       showcaseSeen: userPreference.showcaseSeen,
       unsentCommentNoticeHidden: userPreference.unsentCommentNoticeHidden,
+      backgroundImage: userPreference.backgroundImage,
+      backgroundEnabled: userPreference.backgroundEnabled,
+      backgroundOpacity: userPreference.backgroundOpacity,
       lastProjectId: userPreference.lastProjectId,
       hotkeys: userPreference.hotkeys,
     })

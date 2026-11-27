@@ -106,6 +106,11 @@
     "label": "偏好設定",
     "title": "偏好設定",
     "description": "設定應用程式的外觀和行為。",
+    "backgroundImage": "背景圖片",
+    "backgroundImageDescription": "上傳不超過 5 MB 的 PNG、JPEG、WebP 或 AVIF 圖片。圖片會顯示在專案內容後方，不影響側邊欄，並儲存在帳戶中供其他裝置使用。",
+    "useBackgroundImage": "使用背景圖片",
+    "backgroundImageOpacity": "圖片不透明度",
+    "removeBackgroundImage": "移除背景圖片",
     "saved": "偏好設定已儲存",
     "sections": {
       "appearance": "外觀",

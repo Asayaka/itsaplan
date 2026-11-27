@@ -1,5 +1,5 @@
 import type { Locale } from '@/i18n/locales';
-import { request } from '@/lib/api/core/client';
+import { API_URL, apiFailure, request } from '@/lib/api/core/client';
 import type { HotkeyOverrides } from '@/lib/api/endpoints/settings';
 import type { Palette } from '@/utils/colorThemes';
 import type { CustomTheme } from '@/utils/customTheme';
@@ -53,6 +53,9 @@ export interface AccountPreferences {
   // Whether the user turned off the notice that a comment on a synced issue stays here
   // until they connect their account on the repository host.
   unsentCommentNoticeHidden: boolean;
+  backgroundImage: string | null;
+  backgroundEnabled: boolean;
+  backgroundOpacity: number;
   lastProjectId: number | null;
   // The keyboard shortcuts this user rebound, as { commandId: combo }. Only the
   // changed ones; the rest come from the instance settings, then the built-in
@@ -60,7 +63,7 @@ export interface AccountPreferences {
   hotkeys: HotkeyOverrides;
 }
 
-export type AccountPreferencesPatch = Partial<AccountPreferences>;
+export type AccountPreferencesPatch = Partial<Omit<AccountPreferences, 'backgroundImage'>>;
 
 // The session user's own interface preferences, held per account. A read returns
 // the defaults when nothing was saved; a write patches only the fields it carries.
@@ -75,3 +78,24 @@ export const updateAccountPreferences = (input: AccountPreferencesPatch, locale:
     headers: { 'Accept-Language': locale },
     body: JSON.stringify(input),
   });
+
+export async function uploadAccountBackground(file: File): Promise<AccountPreferences> {
+  const form = new FormData();
+  form.append('file', file);
+  const res = await fetch(`${API_URL}/account/background`, {
+    method: 'POST',
+    credentials: 'include',
+    body: form,
+  });
+  if (!res.ok) throw await apiFailure(res);
+  return res.json();
+}
+
+export async function removeAccountBackground(): Promise<AccountPreferences> {
+  const res = await fetch(`${API_URL}/account/background`, {
+    method: 'DELETE',
+    credentials: 'include',
+  });
+  if (!res.ok) throw await apiFailure(res);
+  return res.json();
+}
